@@ -12,6 +12,13 @@ test_names = [
               "datetime",
               "dbpointer",
               "dbref",
+              "decimal128-1",
+              "decimal128-2",
+              "decimal128-3",
+              "decimal128-4",
+              "decimal128-5",
+              "decimal128-6",
+              "decimal128-7",
               "document",
               "double",
               "int32",
@@ -28,14 +35,6 @@ test_names = [
               "timestamp",
               "top",
               "undefined",
-
-              # "decimal128-1",
-              # "decimal128-2",
-              # "decimal128-3",
-              # "decimal128-4",
-              # "decimal128-5",
-              # "decimal128-6",
-              # "decimal128-7",
              ]
 
 function test_corpus(name)
@@ -43,19 +42,26 @@ function test_corpus(name)
     case = JSON.parse(String(read(path)))
     @testset "$(case["description"])" begin
 
-        for v in case["valid"]
-            @testset "$(v["description"])" begin
-                bson_str = v["canonical_bson"]
-                json_str = v["canonical_extjson"]
+        if haskey(case, "valid")
+            @testset "Read/Write" begin
+                for v in case["valid"]
+                    @testset "$(v["description"])" begin
+                        bson_str = v["canonical_bson"]
+                        bson_bin = hex2bytes(bson_str)
 
-                bson_bin = hex2bytes(bson_str)
-                json_dat = JSON.parse(json_str)
+                        # test minimal round trip read/write
 
-                result = read_bson(bson_bin, codec = :json)
-                @test result == json_dat
+                        result = bytes2hex(write_bson(read_bson(bson_bin, codec = :minimal)))
+                        @test uppercase(result) == uppercase(bson_str)
 
-                result = bytes2hex(write_bson(read_bson(bson_bin, codec = :minimal)))
-                @test uppercase(result) == uppercase(bson_str)
+                        if match(r"^decimal-", name) != nothing
+                            json_str = v["canonical_extjson"]
+                            json_dat = JSON.parse(json_str)
+                            result = read_bson(bson_bin, codec = :json)
+                            @test result == json_dat
+                        end
+                    end
+                end
             end
         end
 
