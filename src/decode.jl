@@ -16,7 +16,7 @@ extjson_decode(x) = x
 extjson_decode(x::Maxkey) = Dict("\$maxKey" => 1)
 extjson_decode(x::Minkey) = Dict("\$minKey" => 1)
 extjson_decode(x::Missing) = Dict("\$undefined" => true)
-extjson_decode(x::ObjectId) = Dict("\$oid" => bytes2hex(x.value))
+extjson_decode(x::ObjectId) = Dict("\$oid" => x.value)
 extjson_decode(x::BSONDate) = Dict("\$date" => extjson_decode(x.value))
 extjson_decode(x::BSONSymbol) = Dict("\$symbol" => x.value)
 extjson_decode(x::Int32) = Dict("\$numberInt" => string(x))

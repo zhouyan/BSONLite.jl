@@ -1,6 +1,6 @@
 module BSONLite
 
-import Base: show, string
+import Base: Vector
 import Base64: base64encode, base64decode
 import Dates: DateTime, UTM, UNIXEPOCH, UTC, now, value
 import Random: rand

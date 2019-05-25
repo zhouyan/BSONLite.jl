@@ -1,3 +1,6 @@
+include("decimal128.jl")
+include("object_id.jl")
+
 struct Element
     key::String
     value::Any
@@ -22,38 +25,6 @@ end
 struct Binary
     subtype::UInt8
     bytes::Vector{UInt8}
-end
-
-struct ObjectId
-    value::Vector{UInt8}
-
-    # TODO default constructor
-
-    function ObjectId(bytes::Vector{UInt8})
-        @assert length(bytes) == 12
-        new(bytes)
-    end
-end
-
-ObjectId(oid::AbstractString) = ObjectId(hex2bytes(oid))
-
-function show(io::IO, oid::ObjectId)
-    write(io, "ObjectId(")
-    write(io, bytes2hex(oid.value))
-    write(io, ")")
-end
-
-struct Decimal128
-    value::Vector{UInt8} # 16 bytes
-
-    function Decimal128()
-        new(fill(UInt8, 16))
-    end
-
-    function Decimal128(bytes::Vector{UInt8})
-        @assert length(bytes) == 16
-        new(bytes)
-    end
 end
 
 struct BSONRegex
