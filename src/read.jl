@@ -100,7 +100,12 @@ function read_bson(io::IO; codec::Union{Function,Symbol} = bson_decode)
     else
         decode = codec
     end
-    decode(read_value(io, Document))
+
+    raw = read_value(io, Document)
+
+    @assert(eof(io))
+
+    decode(raw)
 end
 
 read_bson(buf::AbstractVector{UInt8}; kwargs...) = read_bson(IOBuffer(buf); kwargs...)

@@ -18,12 +18,15 @@ test_names = [
               "int64",
               "maxkey",
               "minkey",
+              "multi-type",
+              "multi-type-deprecated",
               "null",
               "oid",
               "regex",
               "string",
               "symbol",
               "timestamp",
+              "top",
               "undefined",
 
               # "decimal128-1",
@@ -33,8 +36,6 @@ test_names = [
               # "decimal128-5",
               # "decimal128-6",
               # "decimal128-7",
-              # "multi-type-deprecated",
-              # "multi-type",
              ]
 
 function test_corpus(name)

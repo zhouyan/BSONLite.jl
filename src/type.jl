@@ -3,17 +3,11 @@ struct Element
     value::Any
 end
 
-struct BSONSymbol
-    value::String
-end
+struct Maxkey end
+struct Minkey end
 
-struct Document
-    elements::Vector{Element}
-end
-
-struct BSONArray
-    elements::Vector{Element}
-end
+const maxkey = Maxkey()
+const minkey = Minkey()
 
 struct ObjectId
     value::String
@@ -32,10 +26,6 @@ show(io::IO, oid::ObjectId) = write(io, "ObjectId($(string(oid))")
 
 Vector{UInt8}(oid::ObjectId) = Vector{UInt8}(oid.value)
 
-struct Decimal128
-    value::UInt128
-end
-
 struct Binary
     subtype::UInt8
     bytes::Vector{UInt8}
@@ -44,6 +34,18 @@ struct Binary
         @assert t <= 0x05 || t >= 0x80
         new(t, b)
     end
+end
+
+struct BSONSymbol
+    value::String
+end
+
+struct Timestamp
+    value::UInt64
+end
+
+struct Decimal128
+    value::UInt128
 end
 
 struct BSONRegex
@@ -56,6 +58,14 @@ struct DBPointer
     id::ObjectId
 end
 
+struct Document
+    elements::Vector{Element}
+end
+
+struct BSONArray
+    elements::Vector{Element}
+end
+
 struct Code
     code::String
 end
@@ -64,16 +74,6 @@ struct CodeWithScope
     code::String
     scope::Document
 end
-
-struct Timestamp
-    value::UInt64
-end
-
-struct Maxkey end
-struct Minkey end
-
-const maxkey = Maxkey()
-const minkey = Minkey()
 
 const bson_type = Dict(
                         0x01 => Float64,

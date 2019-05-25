@@ -83,7 +83,9 @@ function write_bson(io::IO, doc; codec::Union{Function,Symbol} = bson_encode)
     else
         encode = codec
     end
+
     write_value(io, encode(doc))
+
     io
 end
 
