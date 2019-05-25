@@ -1,7 +1,7 @@
 module BSONLite
 
 import Base64: base64encode, base64decode
-import Base: Vector
+import Base: Vector, show, string
 import DataStructures: OrderedDict
 import Dates: DateTime, UTM, UNIXEPOCH, UTC, now, value
 

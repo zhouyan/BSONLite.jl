@@ -30,6 +30,10 @@ end
 
 ObjectId(str::AbstractString) = ObjectId(hex2bytes(str))
 
+string(oid::ObjectId) = bytes2hex(Vector{UInt8}(oid))
+
+show(io::IO, oid::ObjectId) = write(io, "ObjectId($(string(oid))")
+
 Vector{UInt8}(oid::ObjectId) = Vector{UInt8}(oid.value)
 
 struct Decimal128
