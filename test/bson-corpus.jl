@@ -55,9 +55,6 @@ function test_corpus(name)
 
                 result = bytes2hex(write_bson(read_bson(bson_bin, codec = :minimal)))
                 @test uppercase(result) == uppercase(bson_str)
-
-                result = bytes2hex(write_bson(read_bson(bson_bin, codec = :ordered)))
-                @test uppercase(result) == uppercase(bson_str)
             end
         end
 

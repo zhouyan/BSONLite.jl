@@ -10,14 +10,6 @@ bson_decode(x::BSONDate) = DateTime(UTM(UNIXEPOCH + x.value))
 bson_decode(x::Document) = Dict(elem.key => bson_decode(elem.value) for elem in x.elements)
 bson_decode(x::BSONArray) = [bson_decode(elem.value) for elem in x.elements]
 
-# BSON decoder with OrderedDict
-
-ordered_decode(x) = x
-ordered_decode(x::Binary) = x.subtype == 0x00 ? x.bytes : x
-ordered_decode(x::BSONDate) = DateTime(UTM(UNIXEPOCH + x.value))
-ordered_decode(x::Document) = OrderedDict(elem.key => ordered_decode(elem.value) for elem in x.elements)
-ordered_decode(x::BSONArray) = [ordered_decode(elem.value) for elem in x.elements]
-
 # Canonical Extended JSON decoder
 
 json_decode(x) = x
