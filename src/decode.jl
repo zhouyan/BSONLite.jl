@@ -6,7 +6,6 @@ minimal_decode(x) = x
 
 bson_decode(x) = x
 bson_decode(x::Binary) = x.subtype == 0x00 ? x.bytes : x
-bson_decode(x::BSONDate) = DateTime(UTM(UNIXEPOCH + x.value))
 bson_decode(x::Document) = Dict(elem.key => bson_decode(elem.value) for elem in x.elements)
 bson_decode(x::BSONArray) = [bson_decode(elem.value) for elem in x.elements]
 
@@ -17,7 +16,7 @@ json_decode(x::Maxkey) = Dict("\$maxKey" => 1)
 json_decode(x::Minkey) = Dict("\$minKey" => 1)
 json_decode(x::Missing) = Dict("\$undefined" => true)
 json_decode(x::ObjectId) = Dict("\$oid" => bytes2hex(Vector{UInt8}(x)))
-json_decode(x::BSONDate) = Dict("\$date" => json_decode(x.value))
+json_decode(x::DateTime) = Dict("\$date" => json_decode(value(x) - UNIXEPOCH))
 json_decode(x::BSONSymbol) = Dict("\$symbol" => x.value)
 json_decode(x::Int32) = Dict("\$numberInt" => string(x))
 json_decode(x::Int64) = Dict("\$numberLong" => string(x))

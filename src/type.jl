@@ -7,10 +7,6 @@ struct BSONSymbol
     value::String
 end
 
-struct BSONDate
-    value::Int64
-end
-
 struct Document
     elements::Vector{Element}
 end
@@ -89,7 +85,7 @@ const bson_type = Dict(
                         0x06 => Missing, # undefined
                         0x07 => ObjectId,
                         0x08 => Bool,
-                        0x09 => BSONDate,
+                        0x09 => DateTime,
                         0x0A => Nothing, # null
                         0x0B => BSONRegex,
                         0x0C => DBPointer,
