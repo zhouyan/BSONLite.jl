@@ -1,9 +1,9 @@
 module BSONLite
 
-import Base: Vector
 import Base64: base64encode, base64decode
+import Base: Vector
+import DataStructures: OrderedDict
 import Dates: DateTime, UTM, UNIXEPOCH, UTC, now, value
-import Random: rand
 
 export ObjectId, read_bson, write_bson
 

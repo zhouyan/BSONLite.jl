@@ -1,14 +1,6 @@
 function write_cstring(io, str::String)
-    if isempty(str)
-        write(io, 0x00)
-    elseif str[end] == '\0'
-        @assert '\0' ∉ str[1:(end - 1)]
-        write(io, str)
-    else
-        @assert '\0' ∉ str
-        write(io, str)
-        write(io, 0x00)
-    end
+    write(io, string(Symbol(str))) # safe guard against nulls
+    write(io, 0x00)
 end
 
 function write_element(io::IO, elem::Element)
@@ -85,18 +77,16 @@ end
 
 # high level functions
 
-function write_bson(io::IO, doc; codec::Union{Function,Symbol} = bson_encode, kwargs...)
+function write_bson(io::IO, doc; codec::Union{Function,Symbol} = bson_encode)
     if codec isa Symbol
         encode = eval(Symbol("$(codec)_encode"))
     else
         encode = codec
     end
-    write_value(io, encode(doc; kwargs...))
-    nothing
+    write_value(io, encode(doc))
+    io
 end
 
-function write_bson(doc; kwargs...)
-    io = IOBuffer()
-    write_bson(io, doc; kwargs...)
-    take!(io)
-end
+write_bson(doc; kwargs...) = take!(write_bson(IOBuffer(), doc; kwargs...))
+
+write_bson(file::AbstractString, doc; kwargs...) = open(x -> write_bson(doc; kwargs...), "w")

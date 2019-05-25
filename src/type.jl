@@ -1,6 +1,3 @@
-include("decimal128.jl")
-include("object_id.jl")
-
 struct Element
     key::String
     value::Any
@@ -22,9 +19,32 @@ struct BSONArray
     elements::Vector{Element}
 end
 
+struct ObjectId
+    value::String
+
+    function ObjectId(bytes::Vector{UInt8})
+        @assert length(bytes) == 12
+        new(bytes2hex(bytes))
+    end
+end
+
+ObjectId(str::AbstractString) = ObjectId(hex2bytes(str))
+
+Vector{UInt8}(oid::ObjectId) = hex2bytes(oid.value)
+
+struct Decimal128
+    lower::UInt64
+    upper::UInt64
+end
+
 struct Binary
     subtype::UInt8
     bytes::Vector{UInt8}
+
+    function Binary(t::UInt8, b::Vector{UInt8})
+        @assert t <= 0x05 || t >= 0x80
+        new(t, b)
+    end
 end
 
 struct BSONRegex

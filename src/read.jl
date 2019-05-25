@@ -94,15 +94,15 @@ end
 
 # high level functions
 
-function read_bson(io::IO; codec::Union{Function,Symbol} = bson_decode, kwargs...)
+function read_bson(io::IO; codec::Union{Function,Symbol} = bson_decode)
     if codec isa Symbol
         decode = eval(Symbol("$(codec)_decode"))
     else
         decode = codec
     end
-    decode(read_value(io, Document); kwargs...)
+    decode(read_value(io, Document))
 end
 
-read_bson!(buf::AbstractVector{UInt8}; kwargs...) = read_bson(IOBuffer(buf); kwargs...)
+read_bson(buf::AbstractVector{UInt8}; kwargs...) = read_bson(IOBuffer(buf); kwargs...)
 
-read_bson(buf::AbstractVector{UInt8}; kwargs...) = read_bson!(copy(buf); kwargs...)
+read_bson(file::AbstractString; kwargs...) = open(x -> read_bson(x), file; kwargs...)

@@ -44,20 +44,20 @@ function test_corpus(name)
 
         for v in case["valid"]
             @testset "$(v["description"])" begin
-                bson = uppercase(v["canonical_bson"])
-                bytes = hex2bytes(bson)
-                extjson = JSON.parse(v["canonical_extjson"])
+                bson_str = v["canonical_bson"]
+                json_str = v["canonical_extjson"]
 
-                result = read_bson(bytes; codec = :extjson)
-                @test result == extjson
+                bson_bin = hex2bytes(bson_str)
+                json_dat = JSON.parse(json_str)
 
-                doc = read_bson(bytes, codec = x -> x)
-                result = uppercase(bytes2hex(write_bson(doc)))
-                @test result == bson
+                result = read_bson(bson_bin, codec = :json)
+                @test result == json_dat
 
-                doc = read_bson(bytes, dict = OrderedDict)
-                result = uppercase(bytes2hex(write_bson(doc)))
-                @test result == bson
+                result = bytes2hex(write_bson(read_bson(bson_bin, codec = :minimal)))
+                @test uppercase(result) == uppercase(bson_str)
+
+                result = bytes2hex(write_bson(read_bson(bson_bin, codec = :ordered)))
+                @test uppercase(result) == uppercase(bson_str)
             end
         end
 
@@ -66,8 +66,7 @@ function test_corpus(name)
                 for v in case["decodeErrors"]
                     err = v["description"]
                     @testset "$err" begin
-                        bson = hex2bytes(v["bson"])
-                        @test_throws Exception read_bson(bson)
+                        @test_throws Exception read_bson(hex2bytes(v["bson"]))
                     end
                 end
             end
