@@ -2,7 +2,7 @@ read_cstring(io) = String(readuntil(io, 0x00))
 
 function read_element(io::IO)
     T = bson_type[read(io, UInt8)]
-    Element(Symbol(read_cstring(io)), read_value(io, T))
+    Element(read_cstring(io), read_value(io, T))
 end
 
 function read_document(io::IO)

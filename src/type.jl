@@ -1,5 +1,5 @@
 struct Element
-    key::Symbol
+    key::String
     value::Any
 end
 

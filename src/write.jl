@@ -1,9 +1,7 @@
-function write_cstring(io, sym::Symbol)
-    write(io, string(sym))
+function write_cstring(io, str::String)
+    write(io, string(str))
     write(io, 0x00)
 end
-
-write_cstring(io, str::String) = write_cstring(io, Symbol(str))
 
 function write_element(io::IO, elem::Element)
     write(io, bson_code(elem.value))
