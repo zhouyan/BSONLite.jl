@@ -4,14 +4,14 @@ minimal_decode(x) = x
 
 # Default BSON decoder
 
-bson_decode(x) = x
+bson_decode(x::BSONType) = x
 bson_decode(x::Binary) = x.subtype == 0x00 ? x.bytes : x
 bson_decode(x::Document) = Dict(elem.key => bson_decode(elem.value) for elem in x.elist)
 bson_decode(x::BSONArray) = [bson_decode(elem.value) for elem in x.elist]
 
 # Canonical Extended JSON decoder
 
-json_decode(x) = x
+json_decode(x::BSONType) = x
 json_decode(x::Maxkey) = Dict("\$maxKey" => 1)
 json_decode(x::Minkey) = Dict("\$minKey" => 1)
 json_decode(x::Missing) = Dict("\$undefined" => true)

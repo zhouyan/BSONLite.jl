@@ -102,3 +102,27 @@ const bson_type = Dict(
 for (k, v) in bson_type
     @eval bson_code(::$v) = $k
 end
+
+const BSONType = Union{
+                       Float64,
+                       String,
+                       Document,
+                       BSONArray,
+                       Binary,
+                       Missing, # undefined
+                       ObjectId,
+                       Bool,
+                       DateTime,
+                       Nothing, # null
+                       BSONRegex,
+                       DBPointer,
+                       Code,
+                       BSONSymbol,
+                       CodeWithScope,
+                       Int32,
+                       Timestamp,
+                       Int64,
+                       Decimal128,
+                       Maxkey,
+                       Minkey,
+                      }

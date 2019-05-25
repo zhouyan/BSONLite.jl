@@ -68,7 +68,7 @@ mapping is used.
 | Max key    | 0x7F    | BSONLite.Maxkey        |
 | Min key    | 0xFF    | BSONLite.Minkey        |
 
-All all the BSONLite defined types only `ObjectId` is exported.
+Of all the BSONLite defined types only `ObjectId` is exported.
 
 The main purpose of the `minimal` codec is to ensure round trip equivalency. For
 example,
@@ -83,13 +83,13 @@ shall always success.
 
 This codec make additional decoding of the data for the following types,
 
-| Minimal type           | Julia type                              |
-|------------------------|-----------------------------------------|
-| BSONLite.Document      | Dict                                    |
-| BSONLite.BSONArray     | Vector                                  |
-| BSONLite.Binary        | Vector{UInt8} for default subtype (x00) |
+| Minimal type           | Julia type                               |
+|------------------------|------------------------------------------|
+| BSONLite.Document      | Dict                                     |
+| BSONLite.BSONArray     | Vector                                   |
+| BSONLite.Binary        | Vector{UInt8} for default subtype (0x00) |
 
-Note that the following test might fail due to reordering or elements in a
+Note that the following test might fail due to reordering of elements in a
 document.
 
 ```julia
@@ -125,7 +125,7 @@ One can define custom decoding functions and pass it to `read_bson`. For example
 the `:bson` codec is defined as the following,
 
 ```julia
-bson_decode(x) = x
+bson_decode(x::BSONType) = x
 bson_decode(x::Binary) = x.subtype == 0x00 ? x.bytes : x
 bson_decode(x::Document) = Dict(elem.key => bson_decode(elem.value) for elem in x.elist)
 bson_decode(x::BSONArray) = [bson_decode(elem.value) for elem in x.elist]
@@ -138,7 +138,7 @@ For example, the following will provide round-trip equivalency
 ```julia
 using DataStructures
 
-ordered_decode(x) = x
+ordered_decode(x::BSONType) = x
 ordered_decode(x::Document) = OrderedDict(elem.key => ordered_decode(elem.value) for elem in x.elist)
 ordered_decode(x::BSONArray) = [ordered_decode(elem.value) for elem in x.elist]
 

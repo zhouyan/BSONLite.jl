@@ -4,7 +4,7 @@ import Base64: base64encode, base64decode
 import Base: Vector, show, string
 import Dates: DateTime, UTM, UNIXEPOCH, value
 
-export ObjectId, read_bson, write_bson
+export BSONType, ObjectId, read_bson, write_bson
 
 include("type.jl")
 include("decode.jl")
