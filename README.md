@@ -7,7 +7,7 @@ There is an existing [BSON.jl](https://github.com/MikeInnes/BSON.jl) package.
 This package differ in a few ways.
 
 * It support all BSON types
-* It separate the IO of raw BSON data from how they are encoding of Julia types.
+* It separate the IO of raw BSON data from the encoding of Julia types.
 
 The BSON.jl package is more suitable for use as a general serialization for
 Julia data structures while this package aims to work better in multi-languages
