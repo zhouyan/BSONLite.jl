@@ -33,8 +33,7 @@ show(io::IO, oid::ObjectId) = write(io, "ObjectId($(string(oid))")
 Vector{UInt8}(oid::ObjectId) = Vector{UInt8}(oid.value)
 
 struct Decimal128
-    lower::UInt64
-    upper::UInt64
+    value::UInt128
 end
 
 struct Binary
