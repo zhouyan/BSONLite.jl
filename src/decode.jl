@@ -24,7 +24,7 @@ json_decode(x) = x
 json_decode(x::Maxkey) = Dict("\$maxKey" => 1)
 json_decode(x::Minkey) = Dict("\$minKey" => 1)
 json_decode(x::Missing) = Dict("\$undefined" => true)
-json_decode(x::ObjectId) = Dict("\$oid" => x.value)
+json_decode(x::ObjectId) = Dict("\$oid" => bytes2hex(Vector{UInt8}(x)))
 json_decode(x::BSONDate) = Dict("\$date" => json_decode(x.value))
 json_decode(x::BSONSymbol) = Dict("\$symbol" => x.value)
 json_decode(x::Int32) = Dict("\$numberInt" => string(x))
