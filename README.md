@@ -173,6 +173,8 @@ decimals.
 
 ## LICENSE
 
+BSONLite.jl is released under BSON-2 license
+
 ## TODO
 
 * Support `Decimal128` for Canonical Extended JSON
