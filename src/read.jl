@@ -84,4 +84,4 @@ end
 
 read_bson(buf::AbstractVector{UInt8}; kwargs...) = read_bson(IOBuffer(buf, read = true, write = false); kwargs...)
 
-read_bson(file::AbstractString; kwargs...) = open(x -> read_bson(x), file; kwargs...)
+read_bson(filename::AbstractString; kwargs...) = open(x -> read_bson(x; kwargs...), filename, "r")
