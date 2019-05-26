@@ -1,6 +1,11 @@
 struct Element
     key::String
     value::Any
+
+    function Element(k::AbstractString, v)
+        ('\0' in k) && throw(ArgumentError("Element key cannot have embbeded null"))
+        new(k, v)
+    end
 end
 
 struct Maxkey end
@@ -13,7 +18,7 @@ struct ObjectId
     value::String
 
     function ObjectId(bytes::Vector{UInt8})
-        @assert length(bytes) == 12
+        length(bytes) == 12 || throw(ArgumentError("ObjectId buffer shall be 12 bytes"))
         new(String(bytes))
     end
 end
@@ -31,7 +36,7 @@ struct Binary
     bytes::Vector{UInt8}
 
     function Binary(t::UInt8, b::Vector{UInt8})
-        @assert t <= 0x05 || t >= 0x80
+        t <= 0x05 || t >= 0x80 || throw(ArgumentError("Invalid Binary subtype $t"))
         new(t, b)
     end
 end
@@ -51,6 +56,12 @@ end
 struct BSONRegex
     pattern::String
     options::String
+
+    function BSONRegex(p::AbstractString, o::AbstractString)
+        ('\0' in p) && throw(ArgumentError("BSON regex pattern cannot have embbeded null"))
+        ('\0' in o) && throw(ArgumentError("BSON regex options cannot have embbeded null"))
+        new(p, o)
+    end
 end
 
 struct DBPointer

@@ -1,4 +1,6 @@
-write_cstring(io, str::String) = write(io, string(str), 0x00)
+function write_cstring(io, str::String)
+    write(io, string(str), 0x00)
+end
 
 function write_elem(io::IO, elem::Element)
     ret = 0
@@ -29,7 +31,6 @@ write_value(io::IO, x::Int32) = write(io, x)
 write_value(io::IO, x::Int64) = write(io, x)
 write_value(io::IO, x::Float64) = write(io, x)
 write_value(io::IO, x::DateTime) = write(io, value(x) - UNIXEPOCH)
-write_value(io::IO, x::String) = write(io, Int32(sizeof(x) + 1), x, 0x00)
 write_value(io::IO, x::BSONSymbol) = write_value(io, x.value)
 write_value(io::IO, x::Timestamp) = write(io, x.value)
 write_value(io::IO, x::ObjectId) = write(io, x.value)
@@ -39,6 +40,11 @@ write_value(io::IO, x::Code) = write_value(io, x.code)
 write_value(io::IO, x::BSONRegex) = write_cstring(io, x.pattern) + write_cstring(io, x.options)
 write_value(io::IO, x::Document) = write_elist(io, x.elist)
 write_value(io::IO, x::BSONArray) = write_elist(io, x.elist)
+
+function write_value(io::IO, x::String)
+    @assert isvalid(x)
+    write(io, Int32(sizeof(x) + 1), x, 0x00)
+end
 
 function write_value(io::IO, x::Binary)
     len = Int32(length(x.bytes))
