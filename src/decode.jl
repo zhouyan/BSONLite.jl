@@ -7,7 +7,6 @@ decode(codec::MinimalCodec, x::BSONType) = x
 # Default BSON decoder
 
 decode_key(codec::BSONCodec, k::String) = codec.as_symbol ? Symbol(k) : k
-
 decode(codec::BSONCodec, x::BSONType) = x
 decode(codec::BSONCodec, x::Binary) = x.subtype == 0x00 ? x.bytes : x
 decode(codec::BSONCodec, x::BSONArray) = [decode(codec, elem.value) for elem in x.elist]
@@ -19,9 +18,7 @@ end
 # Canonical Extended JSON decoder
 
 decode_key(codec::JSONCodec, k::String) = codec.as_symbol ? Symbol(k) : k
-
 typekey(codec::JSONCodec, t) = decode_key(codec, "\$t")
-
 decode(codec::JSONCodec, x::BSONType) = x
 decode(codec::JSONCodec, x::Maxkey) = codec.dicttype(typekey(codec, "maxKey") => 1)
 decode(codec::JSONCodec, x::Minkey) = codec.dicttype(typekey(codec, "minKey") => 1)

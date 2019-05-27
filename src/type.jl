@@ -53,6 +53,35 @@ struct ObjectId
     end
 end
 
+function _generate_oid_time(buf::Vector{UInt8})
+    io = IOBuffer()
+    write(io, hton(UInt32(div(value(now(UTC)) - UNIXEPOCH, 1000))))
+    append!(buf, take!(io))
+end
+
+function _generate_oid_counter(buf::Vector{UInt8})
+    global _oid_context
+
+    counter = UInt32(_oid_context[:counter] + 1)
+    _oid_context[:counter] = counter
+    @show counter
+
+    io = IOBuffer()
+    write(io, hton(counter))
+    append!(buf, take!(io)[2:end])
+end
+
+function ObjectId()
+
+    ret = Vector{UInt8}()
+    sizehint!(ret, 12)
+    _generate_oid_time(ret)
+    append!(ret, _oid_context[:rand])
+    _generate_oid_counter(ret)
+
+    ObjectId(ret)
+end
+
 ObjectId(str::AbstractString) = ObjectId(hex2bytes(str))
 
 string(oid::ObjectId) = bytes2hex(Vector{UInt8}(oid))
@@ -103,9 +132,20 @@ struct Document
     elist::Vector{Element}
 end
 
+function getindex(doc::Document, key::AbstractString)
+    for kv in doc.elist
+        if kv.key == key
+            return kv.value
+        end
+    end
+    throw(KeyError("$key not found"))
+end
+
 struct BSONArray
     elist::Vector{Element}
 end
+
+getindex(doc::Document, key::Integer) = doc.elist[key].value
 
 struct Code
     code::String
