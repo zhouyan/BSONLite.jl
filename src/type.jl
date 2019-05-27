@@ -1,3 +1,33 @@
+abstract type AbstractCodec end
+
+struct MinimalCodec <: AbstractCodec end
+
+struct BSONCodec <: AbstractCodec
+    dicttype::Type
+    as_symbol::Bool
+    as_string::Bool
+end
+
+function BSONCodec(dicttype = Dict; as_symbol = true, as_string = true)
+    BSONCodec(dicttype, as_symbol, as_string)
+end
+
+struct JSONCodec <: AbstractCodec
+    dicttype::Type
+    as_symbol::Bool
+    as_string::Bool
+end
+
+function JSONCodec(dicttype = Dict; as_symbol = true, as_string = true)
+    JSONCodec(dicttype, as_symbol, as_string)
+end
+
+const _codec = Dict(
+                    :minimal => MinimalCodec(),
+                    :bson => BSONCodec(),
+                    :json => JSONCodec()
+                   )
+
 struct Element
     key::String
     value::Any

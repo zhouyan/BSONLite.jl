@@ -73,13 +73,9 @@ end
 
 # high level functions
 
-function write_bson(io::IO, doc; codec::Union{Function,Symbol} = bson_encode)
-    if codec isa Symbol
-        encode = eval(Symbol("$(codec)_encode"))
-    else
-        encode = codec
-    end
-    write_value(io, encode(doc))
+function write_bson(io::IO, doc; codec::Union{AbstractCodec,Symbol} = :bson)
+    codec = codec isa Symbol ? _codec[codec] : codec
+    write_value(io, encode(codec, doc))
 end
 
 function write_bson(doc; kwargs...)

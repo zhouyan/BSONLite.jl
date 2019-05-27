@@ -71,15 +71,11 @@ end
 
 # high level functions
 
-function read_bson(io::IO; codec::Union{Function,Symbol} = bson_decode)
-    if codec isa Symbol
-        decode = eval(Symbol("$(codec)_decode"))
-    else
-        decode = codec
-    end
+function read_bson(io::IO; codec::Union{AbstractCodec,Symbol} = :bson)
+    codec = codec isa Symbol ? _codec[codec] : codec
     raw = read_value(io, Document)
     @assert(eof(io))
-    decode(raw)
+    decode(codec, raw)
 end
 
 read_bson(buf::AbstractVector{UInt8}; kwargs...) = read_bson(IOBuffer(buf, read = true, write = false); kwargs...)

@@ -74,7 +74,7 @@ The main purpose of the `minimal` codec is to ensure round trip equivalency. For
 example,
 
 ```julia
-@assert read("test.bson") == write_bson(read_bson("test.bson"), codec = :minimal)
+@assert read("test.bson") == write_bson(read_bson("test.bson", codec = :minimal))
 ```
 
 shall always success.
@@ -93,7 +93,13 @@ Note that the following test might fail due to reordering of elements in a
 document.
 
 ```julia
-@assert read("test.bson") == write_bson(read_bson("test.bson"), codec = :bson)
+@assert read("test.bson") == write_bson(read_bson("test.bson", codec = :bson))
+```
+
+To ensure ordering,
+
+```julia
+read_bson("test.bson", codec = BSONCodec(OrderedDict))
 ```
 
 ### JSON
@@ -116,33 +122,13 @@ Again note that the following may fail due to reordering of elements in a
 document.
 
 ```julia
-@assert read("test.bson") == write_bson(read_bson("test.bson"), codec = :json)
+@assert read("test.bson") == write_bson(read_bson("test.bson", codec = :json))
 ```
 
-### Custom
-
-One can define custom decoding functions and pass it to `read_bson`. For example
-the `:bson` codec is defined as the following,
+To ensure ordering,
 
 ```julia
-bson_decode(x::BSONType) = x
-bson_decode(x::Binary) = x.subtype == 0x00 ? x.bytes : x
-bson_decode(x::Document) = Dict(elem.key => bson_decode(elem.value) for elem in x.elist)
-bson_decode(x::BSONArray) = [bson_decode(elem.value) for elem in x.elist]
-```
-
-Or one can extend an existing codec via Julia's usual method dispatch mechanism.
-
-For example, the following will provide round-trip equivalency
-
-```julia
-using DataStructures
-
-ordered_decode(x::BSONType) = x
-ordered_decode(x::Document) = OrderedDict(elem.key => ordered_decode(elem.value) for elem in x.elist)
-ordered_decode(x::BSONArray) = [ordered_decode(elem.value) for elem in x.elist]
-
-@assert read("test.bson") == write_bson(read_bson("test.bson"), codec = ordered_decode)
+read_bson("test.bson", codec = JSONCodec(OrderedDict))
 ```
 
 ## Encoding data
