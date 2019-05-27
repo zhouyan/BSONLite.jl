@@ -1,8 +1,8 @@
-abstract type AbstractCodec end
+abstract type AbstractBSONCodec end
 
-struct MinimalCodec <: AbstractCodec end
+struct MinimalCodec <: AbstractBSONCodec end
 
-struct BSONCodec <: AbstractCodec
+struct BSONCodec <: AbstractBSONCodec
     dicttype::Type
     as_symbol::Bool
     as_string::Bool
@@ -12,7 +12,7 @@ function BSONCodec(dicttype = Dict; as_symbol = true, as_string = true)
     BSONCodec(dicttype, as_symbol, as_string)
 end
 
-struct JSONCodec <: AbstractCodec
+struct JSONCodec <: AbstractBSONCodec
     dicttype::Type
     as_symbol::Bool
     as_string::Bool

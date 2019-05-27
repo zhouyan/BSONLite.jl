@@ -5,7 +5,7 @@ import Base: Vector, show, string, getindex
 import Dates: DateTime, UTC, UTM, UNIXEPOCH, value, now
 import Random: rand
 
-export AbstractCodec, BSONCodec, JOSNCodec
+export AbstractBSONCodec, BSONCodec, JOSNCodec
 export BSONType, Element, ObjectId, Document, Binary, BSONArray
 export read_bson, write_bson
 

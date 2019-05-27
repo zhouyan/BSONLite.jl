@@ -71,7 +71,7 @@ end
 
 # high level functions
 
-function read_bson(io::IO; codec::Union{AbstractCodec,Symbol} = :bson)
+function read_bson(io::IO; codec::Union{AbstractBSONCodec,Symbol} = :bson)
     codec = codec isa Symbol ? _codec[codec] : codec
     raw = read_value(io, Document)
     @assert(eof(io))

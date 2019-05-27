@@ -73,7 +73,7 @@ end
 
 # high level functions
 
-function write_bson(io::IO, doc; codec::Union{AbstractCodec,Symbol} = :bson)
+function write_bson(io::IO, doc; codec::Union{AbstractBSONCodec,Symbol} = :bson)
     codec = codec isa Symbol ? _codec[codec] : codec
     write_value(io, encode(codec, doc))
 end
