@@ -64,7 +64,6 @@ function _generate_oid_counter(buf::Vector{UInt8})
 
     counter = UInt32(_oid_context[:counter] + 1)
     _oid_context[:counter] = counter
-    @show counter
 
     io = IOBuffer()
     write(io, hton(counter))
